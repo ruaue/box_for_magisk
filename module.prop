@@ -1,6 +1,6 @@
 id=box_for_root
 name=Box for Magisk/KernelSU
-version=v1.5.1
+version=v1.5.2
 versionCode=20240413
 author=t@amarin
 description=use sing-box, clash for tunnel proxy on android device
