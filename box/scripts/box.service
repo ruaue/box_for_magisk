@@ -153,7 +153,7 @@ prepare_singbox() {
     fi
     yq="${box_dir}/bin/yq"
   fi
-
+}
 prepare_clash() {
   # check configuration file
   if ! [ -f "${clash_config}" ]; then
