@@ -15,7 +15,7 @@
 
 </div>
 
-This project is a [Magisk](https://github.com/topjohnwu/Magisk), [KernelSU](https://github.com/tiann/KernelSU), [APatch](https://github.com/bmax121/APatch) module which includes `clash`, `sing-box`, `v2ray` and `xray` proxies.
+This project is a [Magisk](https://github.com/topjohnwu/Magisk), [KernelSU](https://github.com/tiann/KernelSU), [APatch](https://github.com/bmax121/APatch) module which includes `clash`, `sing-box` proxies.
 
 ## Apk Manager
 BFR Manager [Download](https://github.com/taamarin/box.manager) optional
