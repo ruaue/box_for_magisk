@@ -36,29 +36,6 @@ box_bin_alive() {
     return 0
   fi
 }
-
-box_run_crontab() {
-  # start crond with the "-c" option and keep it in the background
-  nohup busybox crond -c "${box_run}" > /dev/null 2>&1 &
-  # delete the previous crontab and create a new crontab
-  busybox crontab -c "${box_run}" -r
-  touch "${box_run}/root"
-  chmod 0755 "${box_run}/root"
-
-  if [ "${run_crontab}" = "true" ]; then
-    log Debug "Cron job enabled"
-    echo "${interva_update} ${scripts_dir}/box.tool geosub" >> "${box_run}/root"
-    log Debug "Interval crontab geox and subs: ${interva_update}."
-    log Info "${bin_name} geox updates: ${update_geo}."
-    if [ "${bin_name}" = "clash" ]; then
-      log Info "${bin_name} subscription update: ${update_subscription}."
-    fi
-  else
-    log Info "Cron Job disabled"
-    log Info "Crontab geox and subscription is disabled."
-  fi
-}
-
 xclash() {
   local xclash_option="${xclash_option:-mihomo}"
   # default to "mihomo" if xclash_option is not set
@@ -162,7 +139,16 @@ prepare_clash() {
   else
     log Info "config ${clash_config}"
   fi
-
+}
+prepare_hysteria() {
+  # check configuration file
+  if ! [ -f "${hysteria_config}" ]; then
+    log Error "configuration file ${hysteria_config} not found"
+    exit 1
+  else
+    log Info "config ${hysteria_config}"
+  fi
+}
 box_run_bin() {
   log Info "client-list: [ ${bin_list[*]} ]"
   log Info "choose: ${bin_name}, start the service."
@@ -195,18 +181,26 @@ box_run_bin() {
         log Error "configuration failed. Please check the ${box_run}/${bin_name}.log file."
         exit 1
       fi
-      
-
-      # check configuration file
-      if ! [ -f "${box_dir}/${bin_name}/config.toml" ] && ! [ -f "${box_dir}/${bin_name}/config.json" ]; then
-        log Error "configuration file not found: ${box_dir}/${bin_name}/config.toml or config.json"
-        rm -f "${box_pid}"
-        exit 1
+      ;;
+     
+     hysteria)
+       if ${bin_path} test -d "${box_dir}/${bin_name}" > "${box_run}/${bin_name}.log" 2>&1; then
+        nohup busybox setuidgid "${box_user_group}" "${bin_path}"  -c "${hysteria_config}" > "${bin_log}" 2>&1 &
+        PID=$!
+        echo -n $PID > "${box_pid}"
+        sleep 1
       else
-        # Displays a configuration xray"
-        log Info "config ${box_dir}/${bin_name}/*.json, or *.toml"
+        log Error "$(<"${box_run}/${bin_name}.log")"
+        log Error "configuration failed. Please check the ${box_run}/${bin_name}.log file."
+        exit 1
       fi
-
+      ;;
+     *)
+      log Error "[ ${bin_name} ] unknown binary."
+      exit 1
+      ;;
+  esac
+}
 box_cgroup() {
   set_cgroup_config() {
     local cgroup_attr="$1"
