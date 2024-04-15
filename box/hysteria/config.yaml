@@ -1,1 +1,21 @@
+server: "10.0.0.1:443"
 
+auth: chika
+
+tls:
+  sni: jp.rs4.us
+
+fastOpen: true
+
+bandwidth:
+  up: 200 mbps
+  down: 1000 mbps
+  
+lazy: true
+
+tcpTProxy:
+  listen: :1536
+  
+udpTProxy:
+  listen: :1536
+  timeout: 20s
