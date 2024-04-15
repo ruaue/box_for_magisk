@@ -184,7 +184,7 @@ box_run_bin() {
       ;;
      
      hysteria)
-       if ${bin_path} test -d "${box_dir}/${bin_name}" > "${box_run}/${bin_name}.log" 2>&1; then
+       if ${bin_path} client  > "${box_run}/${bin_name}.log" 2>&1; then
         nohup busybox setuidgid "${box_user_group}" "${bin_path}"  -c "${hysteria_config}" > "${bin_log}" 2>&1 &
         PID=$!
         echo -n $PID > "${box_pid}"
